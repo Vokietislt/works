@@ -70,7 +70,7 @@
     var rez = 0;// score
     document.getElementById('rez').innerHTML="Score = " + rez;
 
-//vertes
+//values
     for (var i = 0; i < count; i++) {
     var rand = Math.floor(Math.random()*r)+1;
     back [i]= rand;
