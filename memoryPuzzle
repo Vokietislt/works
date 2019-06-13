@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style >
+  body{
+    background-color: #c6bcb3;
+  }
+    .flip {
+       width:240px;
+       height: 200px;
+       margin: 10px;
+       float: left;
+       font-family: Arial ;
+       color: #c6bcb3;
+
+}
+    .flip > .front{
+      position:absolute;
+    transform:perspective( 600px ) rotateY( 0deg );
+    background:#133577;
+    width: 240px;
+     height:200px; border-radius: 7px;
+    backface-visibility: hidden;
+    transition: transform .5s linear 0s;
+  }
+  .flip > .back {
+    position:absolute;
+    transform:perspective( 600px ) rotateY( 180deg);
+    backface-visibility: hidden;
+    background:#375694; width: 240px; height:200px; border-radius:7px;
+    transition : transform .5s linear 0s;
+  }
+  .front{
+    text-align: center;
+    font-size: 36px;
+
+  }
+  .back{
+    text-align: center;
+    font-size: 36px;
+  }
+  #rez{
+    text-align: center;
+    font-size: 22px;
+  }
+  #content{
+  margin-left: auto;
+    width: 90%;
+  }
+</style>
+</head>
+
+<body>
+  <div id="rez">
+  </div>
+<div id="content">
+
+</div>
+<script>
+    var r = 10; // random number to x from 1
+    var count = 5;// number of playing cards , doubles(!)
+    var front ="?";//card front
+    var back=[];//value
+    var sudeti=[];//check
+    var countToWin=0;//moves till win
+    var rez = 0;// score
+    document.getElementById('rez').innerHTML="Score = " + rez;
+
+//vertes
+    for (var i = 0; i < count; i++) {
+    var rand = Math.floor(Math.random()*r)+1;
+    back [i]= rand;
+    }
+    for (var i = 0; i < count; i++) {
+      back[i+count]=back[i];
+    }
+    shuffle(back);
+
+//surasymas
+    for (var i = 0; i < count*2; i++) {
+      var lentele = '<div class="flip" style="cursor: pointer;"><div class="back" onclick ="flipSecond('+i+')" ><h1>'+back[i]+'</h1> </div><div class="front"  onclick ="flipFirst('+i+')" value='+i+' ><h1>'+front+'</h1></<div></div></div>';
+      document.getElementById('content').innerHTML+= lentele;
+    }
+
+//flip
+    var antras = document.getElementsByClassName('front');
+    var trecias = document.getElementsByClassName('back');
+    function flipFirst(id) {
+            antras[id].style.transform=" perspective(600px) rotateY(-180deg)";
+            trecias[id].style.transform=" perspective(600px) rotateY(0deg)";
+            sudeti.push(id);
+            check();
+              rez++;
+              document.getElementById('rez').innerHTML="Score = " + rez;
+        }
+//  flip back
+    function flipSecond(id) {
+      antras[id].style.transform=" perspective(600px) rotateY(0deg)";
+      trecias[id].style.transform=" perspective(600px) rotateY(180deg)";
+      sudeti.pop();
+    }
+
+// shuffle
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            let rnd = Math.floor(Math.random() * i);
+
+            let temp = arr[i];
+            arr[i] = arr[rnd];
+            arr[rnd] = temp;
+        }
+        return arr;}
+//check
+    function check() {
+    if (sudeti.length>=2) {
+      if (back[sudeti[0]]==back[sudeti[1]]) {
+        trecias[sudeti[0]].style.background="rgba(#6480b8, 0.88)";
+        trecias[sudeti[0]].onclick="";
+        trecias[sudeti[1]].style.background='rgba(#3e63ac, 0.88)';
+        trecias[sudeti[1]].onclick="";
+        sudeti.pop();
+        sudeti.pop();
+        countToWin++;
+            if (countToWin==count) {
+              alert("you have won!! Your score is : "+ (rez+1));
+            }
+          }else {
+            antras[sudeti[0]].style.transform=" perspective(600px) rotateY(0deg)";
+            trecias[sudeti[0]].style.transform=" perspective(600px) rotateY(180deg)";
+            sudeti.shift( );
+
+              }
+              }
+          }
+  </script>
+</body>
+</html>
