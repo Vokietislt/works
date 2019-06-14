@@ -10,7 +10,7 @@
     background-color: #c6bcb3;
   }
     .flip {
-       width:240px;
+       width:250px;
        height: 200px;
        margin: 10px;
        float: left;
@@ -43,34 +43,90 @@
     text-align: center;
     font-size: 36px;
   }
-  #rez{
-    text-align: center;
-    font-size: 22px;
-  }
+
   #content{
-  margin-left: auto;
-    width: 90%;
+  margin: auto;
+    width: 900px;
+    height: 1000px;
+    padding-left: 95px;
   }
+  .panel >div{
+    position: static;
+    text-align: center;
+    margin: auto;
+    /* margin-left: 580px; */
+padding: 1.5px;
+    font-size: 22px;
+    width: 900px;
+    height: 32px;
+    background-color: rgba(161, 161, 117, 0.41);
+  }
+  #reset{
+    border: 1px solid rgb(128, 167, 138);
+    width: 100px;
+    height: 32px;
+    margin-top: 10px;
+  }
+  #reset:hover {
+    background-color: rgb(128, 167, 138);
+  }
+  #laimejimai{
+    position: absolute;
+    width: 300px;
+    height: 500px;
+    background-color: inherit;
+    margin: 10px;
+    border: 1px solid rgba(128, 167, 136, 0.57);
+
+  }
+  /* .lentai {
+    position:
+  } */
 </style>
 </head>
 
-<body>
-  <div id="rez">
+<body onload="pradzia()">
+  <div class="panel">
+    <div id="time">Time passed:0s
+    </div>
+    <div id="rez">
+    </div>
+    <div id="results">Click on the card and find number pairs
+    </div>
+    <div id="reset" onclick="pradzia()">
+      Reset
+    </div>
+    <div id="laimejimai">Wins:
+    </div>
   </div>
-<div id="content">
+  <div class="lentai">
+      <div id="content">
+        </div>
 
-</div>
+  </div>
+
 <script>
+
     var r = 10; // random number to x from 1
-    var count = 5;// number of playing cards , doubles(!)
+    var count = 6;// number of playing cards , doubles(!)
     var front ="?";//card front
     var back=[];//value
     var sudeti=[];//check
     var countToWin=0;//moves till win
     var rez = 0;// score
-    document.getElementById('rez').innerHTML="Score = " + rez;
+    var k=0;//laimejimu skaicius
+    document.getElementById('rez').innerHTML="Turn = " + rez;
+function pradzia() {
 
-//values
+  stopCount();
+  rez=0;
+  countToWin=0;
+  document.getElementById('content').innerHTML= "";
+  document.getElementById('rez').innerHTML="Turn = " + rez;
+  document.getElementById('results').innerHTML= "Click on the card and find number pairs";
+
+
+//vertes
     for (var i = 0; i < count; i++) {
     var rand = Math.floor(Math.random()*r)+1;
     back [i]= rand;
@@ -82,25 +138,28 @@
 
 //surasymas
     for (var i = 0; i < count*2; i++) {
-      var lentele = '<div class="flip" style="cursor: pointer;"><div class="back" onclick ="flipSecond('+i+')" ><h1>'+back[i]+'</h1> </div><div class="front"  onclick ="flipFirst('+i+')" value='+i+' ><h1>'+front+'</h1></<div></div></div>';
+      var lentele = '<div class="flip" style="cursor: pointer;"><div class="back" onclick ="flipSecond('+i+')" ><h1>'+back[i]+'</h1> </div><div class="front"  onclick ="flipFirst('+i+')"><h1>'+front+'</h1></<div></div></div>';
       document.getElementById('content').innerHTML+= lentele;
     }
+  }
 
 //flip
     var antras = document.getElementsByClassName('front');
     var trecias = document.getElementsByClassName('back');
     function flipFirst(id) {
             antras[id].style.transform=" perspective(600px) rotateY(-180deg)";
+            // antras[id].onclick="";
             trecias[id].style.transform=" perspective(600px) rotateY(0deg)";
             sudeti.push(id);
-            check();
               rez++;
-              document.getElementById('rez').innerHTML="Score = " + rez;
+              check();
+              document.getElementById('rez').innerHTML="Turn = " + rez;
         }
 //  flip back
     function flipSecond(id) {
       antras[id].style.transform=" perspective(600px) rotateY(0deg)";
       trecias[id].style.transform=" perspective(600px) rotateY(180deg)";
+      // antras[id].onclick='"flipFirst('+id+')"';
       sudeti.pop();
     }
 
@@ -125,16 +184,44 @@
         sudeti.pop();
         sudeti.pop();
         countToWin++;
-            if (countToWin==count) {
-              alert("you have won!! Your score is : "+ (rez+1));
+          startCount();
+            if (countToWin>=count) {
+              document.getElementById('results').innerHTML= "You have won on "+rez+" Turns";
+              k++;
+              document.getElementById('laimejimai').innerHTML+= "<br>Game "+k+" Time: "+c+" Turns: "+rez+"";
+              stopCount();
+              // alert( );
             }
           }else {
             antras[sudeti[0]].style.transform=" perspective(600px) rotateY(0deg)";
             trecias[sudeti[0]].style.transform=" perspective(600px) rotateY(180deg)";
             sudeti.shift( );
 
-              }
-              }
+                }
+        }
+      }
+
+          var c = 0;
+          var t;
+          var timer_is_on = 0;
+
+          function startCount() {
+            if (!timer_is_on) {
+              timer_is_on = 1;
+              timedCount();
+            }
+          }
+
+          function stopCount() {
+            clearTimeout(t);
+            timer_is_on = 0;
+            document.getElementById("time").innerHTML ="Time passed:"+ c+"s";
+            c=0;
+          }
+          function timedCount() {
+            document.getElementById("time").innerHTML = "Time passed:"+c+"s";
+            c = c + 1;
+            t = setTimeout(timedCount, 1000);
           }
   </script>
 </body>
